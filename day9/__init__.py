@@ -2,7 +2,7 @@ import math
 
 from utils import parse_input
 
-FILE_PATH = 'input.txt'
+FILE_PATH = 'put.txt'
 
 parsed_input = parse_input(FILE_PATH)
 
@@ -42,8 +42,33 @@ def adjust_accordingly(cur_pos, direction):
     return cur_pos
 
 
-# def solution_part_two(parsed_input):
+def solution_part_two(commands):
+    vis = {}
+    snake = [(0, 0)] * 9
+    old_snake = [(0, 0)] * 9
+
+    for command in commands:
+        [direction, steps] = command.split(" ")
+        for step in range(0, int(steps)):
+            for current_snake_index in range(0, len(snake)):
+                snake[current_snake_index] = adjust_accordingly(snake[current_snake_index], direction)
+                if snake[current_snake_index] == old_snake[current_snake_index]:
+                    continue
+                prev_snake_index = current_snake_index - 1
+                distance_current_next = get_absolute_distance(snake[current_snake_index], snake[prev_snake_index])
+
+                if not distance_current_next == math.sqrt(2) and distance_current_next > 1:
+                    snake[current_snake_index] = old_snake[prev_snake_index]
+
+                old_snake[prev_snake_index] = snake[current_snake_index]
+                vis[snake[-1]] = "#"
+            print("every step", snake)
+
+        print("every command", snake)
+
+
+    return len(vis)
 
 
 print(solution_part_one(parsed_input))
-# print(solution_part_two(parsed_input))
+print(solution_part_two(parsed_input))
