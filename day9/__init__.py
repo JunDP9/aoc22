@@ -11,7 +11,6 @@ def solution_part_one(commands):
     vis = {}
     cur_pos_h = (0, 0)
     cur_pos_t = cur_pos_h
-    prev_pos_h = cur_pos_h
 
     for command in commands:
         [direction, steps] = command.split(" ")
@@ -19,9 +18,26 @@ def solution_part_one(commands):
             cur_pos_h = adjust_accordingly(cur_pos_h, direction)
             distance_h_t = get_absolute_distance(cur_pos_h, cur_pos_t)
             if not distance_h_t == math.sqrt(2) and distance_h_t > 1:
-                cur_pos_t = prev_pos_h
+                if distance_h_t > 2:
+                    if cur_pos_h[1] - cur_pos_t[1] < 0:
+                        if cur_pos_h[0] - cur_pos_t[0] < 0:
+                            cur_pos_t = (cur_pos_t[0] - 1, cur_pos_t[1] - 1)
+                        if cur_pos_h[0] - cur_pos_t[0] > 0:
+                            cur_pos_t = (cur_pos_t[0] + 1, cur_pos_t[1] - 1)
+                    else:
+                        if cur_pos_h[0] - cur_pos_t[0] < 0:
+                            cur_pos_t = (cur_pos_t[0] - 1, cur_pos_t[1] + 1)
+
+                        if cur_pos_h[0] - cur_pos_t[0] > 0:
+                            cur_pos_t = (cur_pos_t[0] + 1, cur_pos_t[1] + 1)
+                else:
+                    if abs(cur_pos_h[0] - cur_pos_t[0]) > 0:
+                        cur_pos_t = ((cur_pos_t[0] + cur_pos_h[0]) // 2, cur_pos_t[1])
+
+                    elif abs(cur_pos_h[1] - cur_pos_t[1]) > 0:
+                        cur_pos_t = (cur_pos_t[0], (cur_pos_t[1] + cur_pos_h[1]) // 2)
+
             vis[cur_pos_t] = "#"
-            prev_pos_h = cur_pos_h
 
     return len(vis)
 
@@ -55,9 +71,7 @@ def solution_part_two(commands):
                 prev_snake_index = current_snake_index - 1
                 distance_current_next = get_absolute_distance(snake[current_snake_index], snake[prev_snake_index])
                 if not distance_current_next == math.sqrt(2) and distance_current_next > 1:
-                    print("current", snake[current_snake_index], "prev", snake[prev_snake_index])
                     if distance_current_next > 2:
-                        print(distance_current_next)
                         snake[current_snake_index] = (old_snake[prev_snake_index][0], snake[prev_snake_index][1])
                         snake[current_snake_index] = adjust_accordingly(snake[current_snake_index], direction)
                         # print("past", old_snake[prev_snake_index], "future", snake[prev_snake_index])
@@ -75,10 +89,6 @@ def solution_part_two(commands):
                 #
                 #     old_snake[prev_snake_index] = snake[current_snake_index]
                 #
-
-            print("every step", step, snake)
-
-        print("every command", command)
 
     return len(vis)
 
