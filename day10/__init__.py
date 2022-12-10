@@ -24,38 +24,28 @@ def get_cycle_stack(commands):
 
 
 def solution_part_two(commands):
-    stack = get_cycle_stack(commands)
-
-    specials = [0, 40, 80, 120, 160, 200, 240]
-
     res = []
-
-    sprite_left_index, sprite_middle_index, sprite_right_index = 0, 1, 2
+    stack = get_cycle_stack(commands)
+    specials = [0, 40, 80, 120, 160, 200, 240]
+    sprite = (0, 1, 2)
     for index in range(0, len(specials) - 1):
-        sprite_left_index, sprite_middle_index, sprite_right_index = generate_line(res, (stack[specials[index]:specials[index + 1]]), sprite_left_index, sprite_middle_index, sprite_right_index)
-    print(''.join(res[:40]))
-    print(''.join(res[40:80]))
-    print(''.join(res[80:120]))
-    print(''.join(res[120:160]))
-    print(''.join(res[160:200]))
-    print(''.join(res[200:240]))
+        sprite = generate_line(res, (stack[specials[index]:specials[index + 1]]), sprite)
+        print(''.join(res[specials[index]:specials[index + 1]]))
 
-    return "none"
+    return "See above"
 
 
-def generate_line(res, split, sprite_left_index, sprite_middle_index, sprite_right_index):
+def generate_line(res, split, sprite):
     for stack_index in range(0, len(split)):
-
-        if sprite_left_index == stack_index or sprite_middle_index == stack_index or sprite_right_index == stack_index:
+        if sprite[0] == stack_index or sprite[1] == stack_index or sprite[2] == stack_index:
             res.append("#")
         else:
             res.append(" ")
 
-        sprite_middle_index += split[stack_index]
-        sprite_left_index = sprite_middle_index - 1
-        sprite_right_index = sprite_middle_index + 1
+        new_middle_index = sprite[1] + split[stack_index]
+        sprite = (new_middle_index-1, new_middle_index, new_middle_index+1)
 
-    return sprite_left_index, sprite_middle_index, sprite_right_index
+    return sprite
 
 
 print(solution_part_one(parsed_input))
