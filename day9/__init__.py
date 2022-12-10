@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 from utils import parse_input
 
-FILE_PATH = 'put.txt'
+FILE_PATH = 'input.txt'
 
 parsed_input = parse_input(FILE_PATH)
 
@@ -62,7 +62,7 @@ def adjust_accordingly(cur_pos, direction):
 
 def solution_part_two(commands):
     vis = {}
-    snake = [(0, 0)] * 9
+    snake = [(0, 0)] * 10
 
     for command in commands:
         [direction, steps] = command.split(" ")
@@ -100,7 +100,7 @@ def solution_part_two(commands):
                                     snake[current_snake_index][1] + snake[prev_snake_index][1]) // 2)
 
                 vis[snake[-1]] = "#"
-        plot_snake(snake)
+        # plot_snake(snake)
 
     return len(vis)
 
