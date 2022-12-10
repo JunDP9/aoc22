@@ -1,6 +1,6 @@
 import math
-import matplotlib.pyplot as plt
 
+from matplotlib import pyplot as plt
 
 from utils import parse_input
 
@@ -100,15 +100,15 @@ def solution_part_two(commands):
                                     snake[current_snake_index][1] + snake[prev_snake_index][1]) // 2)
 
                 vis[snake[-1]] = "#"
-        print("command", snake)
-        # You'll need to figure out how to save your output this way
-        # setting the window to be [0, 20]
-        plt.xlim([-50, 50])
-        plt.ylim([-50, 50])
-        # plot the graph
-        plt.scatter(x=[x[0] for x in snake], y=[y[1] for y in snake])
+        plot_snake(snake)
 
     return len(vis)
+
+
+def plot_snake(snake):
+    print("command", snake)
+    plt.scatter(*zip(*snake))
+    plt.show()
 
 
 print(solution_part_one(parsed_input))
