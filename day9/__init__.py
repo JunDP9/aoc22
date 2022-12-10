@@ -2,7 +2,7 @@ import math
 
 from utils import parse_input
 
-FILE_PATH = 'put.txt'
+FILE_PATH = 'nput.txt'
 
 parsed_input = parse_input(FILE_PATH)
 
@@ -50,22 +50,35 @@ def solution_part_two(commands):
     for command in commands:
         [direction, steps] = command.split(" ")
         for step in range(0, int(steps)):
-            for current_snake_index in range(0, len(snake)):
-                snake[current_snake_index] = adjust_accordingly(snake[current_snake_index], direction)
-                if snake[current_snake_index] == old_snake[current_snake_index]:
-                    continue
+            snake[0] = adjust_accordingly(snake[0], direction)
+            for current_snake_index in range(1, len(snake)):
                 prev_snake_index = current_snake_index - 1
                 distance_current_next = get_absolute_distance(snake[current_snake_index], snake[prev_snake_index])
-
                 if not distance_current_next == math.sqrt(2) and distance_current_next > 1:
-                    snake[current_snake_index] = old_snake[prev_snake_index]
-
-                old_snake[prev_snake_index] = snake[current_snake_index]
+                    print("current", snake[current_snake_index], "prev", snake[prev_snake_index])
+                    if distance_current_next > 2:
+                        print(distance_current_next)
+                        snake[current_snake_index] = (old_snake[prev_snake_index][0], snake[prev_snake_index][1])
+                        snake[current_snake_index] = adjust_accordingly(snake[current_snake_index], direction)
+                        # print("past", old_snake[prev_snake_index], "future", snake[prev_snake_index])
+                    else:
+                        snake[current_snake_index] = old_snake[prev_snake_index]
+                old_snake[prev_snake_index] = snake[prev_snake_index]
                 vis[snake[-1]] = "#"
-            print("every step", snake)
 
-        print("every command", snake)
+                # else:
+                #     prev_snake_index = current_snake_index - 1
+                #     distance_current_next = get_absolute_distance(snake[current_snake_index], snake[prev_snake_index])
+                #
+                #     if not distance_current_next == math.sqrt(2) and distance_current_next > 1:
+                #         snake[current_snake_index] = old_snake[prev_snake_index]
+                #
+                #     old_snake[prev_snake_index] = snake[current_snake_index]
+                #
 
+            print("every step", step, snake)
+
+        print("every command", command)
 
     return len(vis)
 
