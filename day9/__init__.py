@@ -1,8 +1,10 @@
 import math
+import matplotlib.pyplot as plt
+
 
 from utils import parse_input
 
-FILE_PATH = 'nput.txt'
+FILE_PATH = 'put.txt'
 
 parsed_input = parse_input(FILE_PATH)
 
@@ -98,7 +100,13 @@ def solution_part_two(commands):
                                     snake[current_snake_index][1] + snake[prev_snake_index][1]) // 2)
 
                 vis[snake[-1]] = "#"
-            print("command", snake)
+        print("command", snake)
+        # You'll need to figure out how to save your output this way
+        # setting the window to be [0, 20]
+        plt.xlim([-50, 50])
+        plt.ylim([-50, 50])
+        # plot the graph
+        plt.scatter(x=[x[0] for x in snake], y=[y[1] for y in snake])
 
     return len(vis)
 
