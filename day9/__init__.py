@@ -61,7 +61,6 @@ def adjust_accordingly(cur_pos, direction):
 def solution_part_two(commands):
     vis = {}
     snake = [(0, 0)] * 9
-    old_snake = [(0, 0)] * 9
 
     for command in commands:
         [direction, steps] = command.split(" ")
@@ -69,26 +68,37 @@ def solution_part_two(commands):
             snake[0] = adjust_accordingly(snake[0], direction)
             for current_snake_index in range(1, len(snake)):
                 prev_snake_index = current_snake_index - 1
-                distance_current_next = get_absolute_distance(snake[current_snake_index], snake[prev_snake_index])
-                if not distance_current_next == math.sqrt(2) and distance_current_next > 1:
-                    if distance_current_next > 2:
-                        snake[current_snake_index] = (old_snake[prev_snake_index][0], snake[prev_snake_index][1])
-                        snake[current_snake_index] = adjust_accordingly(snake[current_snake_index], direction)
-                        # print("past", old_snake[prev_snake_index], "future", snake[prev_snake_index])
-                    else:
-                        snake[current_snake_index] = old_snake[prev_snake_index]
-                old_snake[prev_snake_index] = snake[prev_snake_index]
-                vis[snake[-1]] = "#"
 
-                # else:
-                #     prev_snake_index = current_snake_index - 1
-                #     distance_current_next = get_absolute_distance(snake[current_snake_index], snake[prev_snake_index])
-                #
-                #     if not distance_current_next == math.sqrt(2) and distance_current_next > 1:
-                #         snake[current_snake_index] = old_snake[prev_snake_index]
-                #
-                #     old_snake[prev_snake_index] = snake[current_snake_index]
-                #
+                distance_h_t = get_absolute_distance(snake[prev_snake_index], snake[current_snake_index])
+                if not distance_h_t == math.sqrt(2) and distance_h_t > 1:
+                    if distance_h_t > 2:
+                        if snake[prev_snake_index][1] - snake[current_snake_index][1] < 0:
+                            if snake[prev_snake_index][0] - snake[current_snake_index][0] < 0:
+                                snake[current_snake_index] = (
+                                    snake[current_snake_index][0] - 1, snake[current_snake_index][1] - 1)
+                            if snake[prev_snake_index][0] - snake[current_snake_index][0] > 0:
+                                snake[current_snake_index] = (
+                                    snake[current_snake_index][0] + 1, snake[current_snake_index][1] - 1)
+                        else:
+                            if snake[prev_snake_index][0] - snake[current_snake_index][0] < 0:
+                                snake[current_snake_index] = (
+                                    snake[current_snake_index][0] - 1, snake[current_snake_index][1] + 1)
+
+                            if snake[prev_snake_index][0] - snake[current_snake_index][0] > 0:
+                                snake[current_snake_index] = (
+                                    snake[current_snake_index][0] + 1, snake[current_snake_index][1] + 1)
+                    else:
+                        if abs(snake[prev_snake_index][0] - snake[current_snake_index][0]) > 0:
+                            snake[current_snake_index] = (
+                                (snake[current_snake_index][0] + snake[prev_snake_index][0]) // 2,
+                                snake[current_snake_index][1])
+
+                        elif abs(snake[prev_snake_index][1] - snake[current_snake_index][1]) > 0:
+                            snake[current_snake_index] = (snake[current_snake_index][0], (
+                                    snake[current_snake_index][1] + snake[prev_snake_index][1]) // 2)
+
+                vis[snake[-1]] = "#"
+            print("command", snake)
 
     return len(vis)
 
