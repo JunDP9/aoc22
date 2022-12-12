@@ -28,11 +28,12 @@ def create_operation(operation, operation_number):
 
 
 def create_test(divisible, true_monkey, false_monkey):
-    return lambda to_divide: true_monkey if to_divide % divisible == 0 else false_monkey
+    return lambda to_divide: (true_monkey, to_divide % divisible, divisible) if to_divide % divisible == 0 else (false_monkey, to_divide % divisible, divisible)
 
 
 def get_monkeys(parsed_input):
     monkeys = []
+    super_modulo = 1
     for index in range(0, len(parsed_input), 7):
         if parsed_input[index].startswith("Monkey"):
             second_line = parsed_input[index + 1].replace("Starting items: ", "")
@@ -47,15 +48,15 @@ def get_monkeys(parsed_input):
             true_monkey = int(parsed_input[index + 4].replace("If true: throw to monkey ", ""))
             false_monkey = int(parsed_input[index + 5].replace("If false: throw to monkey ", ""))
             test = create_test(divisible, true_monkey, false_monkey)
-
+            super_modulo *= divisible
             count = 0
 
             monkeys.append([starting_items, operation, test, count])
-    return monkeys
+    return monkeys, super_modulo
 
 
 def solution_part_one(parsed_input):
-    monkeys = get_monkeys(parsed_input)
+    [monkeys, _] = get_monkeys(parsed_input)
 
     for index in range(0, 20):
         for monkey in monkeys:
@@ -63,7 +64,7 @@ def solution_part_one(parsed_input):
                 starting_item = monkey[0].pop(0)
                 result_operation = monkey[1](starting_item)
                 bored_worry_level = math.floor(result_operation // 3)
-                to_throw_monkey = monkey[2](bored_worry_level)
+                to_throw_monkey = monkey[2](bored_worry_level)[0]
                 monkeys[to_throw_monkey][0].append(bored_worry_level)
                 monkey[3] += 1
     print(reduce(lambda x, y: x * y, sorted([monkey[3] for monkey in monkeys])[-2:]))
@@ -71,16 +72,20 @@ def solution_part_one(parsed_input):
 
 
 def solution_part_two(parsed_input):
-    monkeys = get_monkeys(parsed_input)
+    [monkeys, super_modulo] = get_monkeys(parsed_input)
+    print(super_modulo)
 
-    for index in range(0, 10000):
+    for index in range(0, 20):
         for monkey in monkeys:
             while len(monkey[0]) > 0:
                 starting_item = monkey[0].pop(0)
                 result_operation = monkey[1](starting_item)
-                to_throw_monkey = monkey[2](result_operation)
-                monkeys[to_throw_monkey][0].append(result_operation)
+                to_throw_monkey = monkey[2](result_operation)[0]
+
+                monkeys[to_throw_monkey][0].append(result_operation % super_modulo)
                 monkey[3] += 1
+
+        # print(([monkey[3] for monkey in monkeys]))
     print(reduce(lambda x, y: x * y, sorted([monkey[3] for monkey in monkeys])[-2:]))
     return monkeys
 
